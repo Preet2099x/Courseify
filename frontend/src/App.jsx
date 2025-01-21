@@ -17,7 +17,28 @@ function App() {
         return;
       }
 
-      const response = await axios.get(
+      // 1. Fetch playlist metadata (including title)
+      const playlistResponse = await axios.get(
+        `https://www.googleapis.com/youtube/v3/playlists`,
+        {
+          params: {
+            part: 'snippet',
+            id: playlistId, // Use 'id' to get specific playlist info
+            key: import.meta.env.VITE_YOUTUBE_API,
+          },
+        }
+      );
+
+      if (!playlistResponse.data.items || playlistResponse.data.items.length === 0) {
+        setError("Playlist not found");
+        return;
+      }
+
+      const playlistTitle = playlistResponse.data.items[0].snippet.title;
+      setPlaylistTitle(playlistTitle);
+
+      // 2. Fetch playlist items (videos)
+      const playlistItemsResponse = await axios.get(
         `https://www.googleapis.com/youtube/v3/playlistItems`,
         {
           params: {
@@ -29,17 +50,13 @@ function App() {
         }
       );
 
-      if (!response.data.items || response.data.items.length === 0) {
+      if (!playlistItemsResponse.data.items || playlistItemsResponse.data.items.length === 0) {
         setError("No videos found in playlist");
         return;
       }
 
-      // Extract playlist title from response data (assuming it's in the snippet.title of the first item)
-      const playlistTitle = response.data.items[0].snippet.title;
-
-      setPlaylistTitle(playlistTitle);
       setVideos(
-        response.data.items.map((item) => ({
+        playlistItemsResponse.data.items.map((item) => ({
           title: item.snippet.title,
           videoId: item.snippet.resourceId.videoId,
           thumbnail: item.snippet.thumbnails?.default?.url,
@@ -61,7 +78,7 @@ function App() {
       <h2>YouTube Course Converter</h2>
       <input
         type="text"
-        placeholder="Enter Playlist Link"
+        placeholder="Enter YouTube Playlist Link"
         value={playlistUrl}
         onChange={(e) => setPlaylistUrl(e.target.value)}
       />
@@ -69,16 +86,16 @@ function App() {
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {playlistTitle && <h1>{playlistTitle}</h1>} {/* Display Playlist Title from response */}
+      {playlistTitle && <h1>{playlistTitle}</h1>} {/* Display actual playlist title */}
 
-      {videos.length > 0 && ( // Conditionally render the list
+      {videos.length > 0 && (
         <ul>
           {videos.map((video) => (
             <li key={video.videoId}>
               {video.title}
-              {video.thumbnail && <img src={video.thumbnail} alt={video.title} />} {/* Display thumbnail */}
+              {video.thumbnail && <img src={video.thumbnail} alt={video.title} />}
               <a
-                href={`https://www.youtube.com/watch?v=${video.videoId}`} // Corrected YouTube link
+                href={`https://www.youtube.com/watch?v=${video.videoId}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >

@@ -1,42 +1,37 @@
-import { useState } from 'react';
+// SearchPage.jsx
+import React, { useState } from 'react';
 import axios from 'axios';
+import DisplayPage from '../displayPage/DisplayPage';
 
 const SearchPage = () => {
-  const [playlistUrl, setPlaylistUrl] = useState(''); 
-  const [playlistTitle, setPlaylistTitle] = useState(''); 
-  const [videos, setVideos] = useState([]); 
-  const [error, setError] = useState(null); 
+  const [playlistUrl, setPlaylistUrl] = useState('');
+  const [playlistData, setPlaylistData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [searchInitiated, setSearchInitiated] = useState(false);
 
   const handleFetchPlaylist = async () => {
     setError(null);
+    setLoading(true);
+    setSearchInitiated(true); // Set searchInitiated to true *before* fetching
+
     try {
       const playlistId = extractPlaylistId(playlistUrl);
       if (!playlistId) {
-        setError("Invalid Playlist URL");
-        return;
+        throw new Error("Invalid Playlist URL");
       }
 
-      // 1. Fetch playlist metadata (including title)
       const playlistResponse = await axios.get(
         `https://www.googleapis.com/youtube/v3/playlists`,
         {
           params: {
             part: 'snippet',
-            id: playlistId, // Use 'id' to get specific playlist info
+            id: playlistId,
             key: import.meta.env.VITE_YOUTUBE_API,
           },
         }
       );
 
-      if (!playlistResponse.data.items || playlistResponse.data.items.length === 0) {
-        setError("Playlist not found");
-        return;
-      }
-
-      const playlistTitle = playlistResponse.data.items[0].snippet.title;
-      setPlaylistTitle(playlistTitle);
-
-      // 2. Fetch playlist items (videos)
       const playlistItemsResponse = await axios.get(
         `https://www.googleapis.com/youtube/v3/playlistItems`,
         {
@@ -49,20 +44,18 @@ const SearchPage = () => {
         }
       );
 
-      if (!playlistItemsResponse.data.items || playlistItemsResponse.data.items.length === 0) {
-        setError("No videos found in playlist");
-        return;
-      }
-
-      setVideos(
-        playlistItemsResponse.data.items.map((item) => ({
+      setPlaylistData({
+        title: playlistResponse.data.items[0].snippet.title,
+        items: playlistItemsResponse.data.items.map((item) => ({
           title: item.snippet.title,
           videoId: item.snippet.resourceId.videoId,
           thumbnail: item.snippet.thumbnails?.default?.url,
-        }))
-      );
-    } catch (error) {
-      setError(error.message);
+        })),
+      });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,40 +65,32 @@ const SearchPage = () => {
     return match ? match[1] : null;
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleFetchPlaylist();
+  };
+
+  if (searchInitiated && playlistData) {
+    return <DisplayPage playlistTitle={playlistData.title} videos={playlistData.items} error={error}/>;
+  }
+
   return (
-    <div id="main">
+    <div>
       <h2>ADD COURSE</h2>
-      <input
-        type="text"
-        placeholder="Enter YouTube Playlist Link"
-        value={playlistUrl}
-        onChange={(e) => setPlaylistUrl(e.target.value)}
-      />
-      <button onClick={handleFetchPlaylist}>Search</button>
-
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      {playlistTitle && <h1>{playlistTitle}</h1>} {/* Display actual playlist title */}
-
-      {videos.length > 0 && (
-        <ul>
-          {videos.map((video) => (
-            <li key={video.videoId}>
-              {video.title}
-              {video.thumbnail && <img src={video.thumbnail} alt={video.title} />}
-              <a
-                href={`https://www.youtube.com/watch?v=${video.videoId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <button>Watch</button>
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Enter YouTube Playlist Link"
+          value={playlistUrl}
+          onChange={(e) => setPlaylistUrl(e.target.value)}
+        />
+        <button type="submit" disabled={loading}>
+            {loading ? "Loading..." : "Search"}
+        </button>
+      </form>
+        {error && <p style={{color:"red"}}>{error}</p>}
     </div>
   );
-}
+};
 
 export default SearchPage;

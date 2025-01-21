@@ -23,7 +23,7 @@ function App() {
           params: {
             part: 'snippet',
             playlistId: playlistId,
-            key: 'AIzaSyBRJhan2CMPyz_D2EKu_I3X8dtyEI1HgoM',
+            key: import.meta.env.VITE_YOUTUBE_API,
             maxResults: 50,
           },
         }

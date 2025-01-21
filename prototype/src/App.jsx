@@ -23,7 +23,7 @@ function App() {
           params: {
             part: 'snippet',
             playlistId: playlistId,
-            key: 'AIzaSyBRJhan2CMPyz_D2EKu_I3X8dtyEI1HgoM', // Replace with YOUR API KEY
+            key: 'AIzaSyBRJhan2CMPyz_D2EKu_I3X8dtyEI1HgoM', 
             maxResults: 50,
           },
         }

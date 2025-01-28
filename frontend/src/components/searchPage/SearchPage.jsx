@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import DisplayPage from '../displayPage/DisplayPage';
 
+
 const SearchPage = () => {
   const [playlistUrl, setPlaylistUrl] = useState('');
   const [playlistData, setPlaylistData] = useState(null);
@@ -107,6 +108,7 @@ const SearchPage = () => {
         </button>
       </form>
       {error && <p style={{ color: "red" }}>{error}</p>}
+
     </div>
   );
 };

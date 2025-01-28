@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 const DisplayPage = ({ playlistTitle, videos, error }) => {
   if (error) {
     return <p style={{ color: 'red' }}>{error}</p>;
@@ -15,15 +14,15 @@ const DisplayPage = ({ playlistTitle, videos, error }) => {
       <h1>{playlistTitle}</h1>
       <p>Total Videos: {videos.length}</p>
       <div className="video-list-container">
-        <ol style={{ listStyleType: 'none', paddingLeft: 0 }}> {/* Remove default list styles */}
+        <ol style={{ listStyleType: 'none', paddingLeft: 0 }}> 
           {videos.map((video, index) => (
             <li key={video.videoId}>
               {index + 1}. {video.title}
               {video.thumbnail && <img src={video.thumbnail} alt={video.title} />}
-              <a
-                href={`https://www.youtube.com/watch?v=$${video.videoId}`}
-                target="_blank"
-                rel="noopener noreferrer"
+              <a 
+                href={`https://www.youtube.com/watch?v=${video.videoId}`} 
+                target="_blank" 
+                rel="noopener noreferrer" 
               >
                 <button>Watch</button>
               </a>
@@ -31,7 +30,7 @@ const DisplayPage = ({ playlistTitle, videos, error }) => {
           ))}
         </ol>
       </div>
-      <button>ADD COURSE</button>
+      <button>ADD COURSE</button> 
     </div>
   );
 };

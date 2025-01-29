@@ -1,21 +1,28 @@
-const app = require('express');
-const http = require('http').Server(app);
-
+const express = require('express');
 const mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://preet2099x:kOZiI8wLq2HvEV2P@test-pro-db.m6pmy.mongodb.net/?retryWrites=true&w=majority&appName=test-pro-db')
+const cors = require('cors');
+require('dotenv').config();
 
-const User = require('./models/userModel');
+const app = express();
 
-async function insert()
-{
-    await User.create({
-        name:'DB Connection',
-        email: 'db@atlas.com'
-    })
-}
+// Connect to MongoDB Atlas
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB!'))
+  .catch(err => console.error('Connection failed:', err));
 
-insert();
+// Middleware
+app.use(cors({
+    origin: 'http://localhost:5173', // Your React app's URL
+    credentials: true // Optional (for cookies/auth later)
+  }));
+app.use(express.json());
 
-http.listen(3000,function(){
-    console.log("Server is running");
+// Routes
+const courseRoutes = require('./routes/courseRoutes');
+app.use('/api', courseRoutes);
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

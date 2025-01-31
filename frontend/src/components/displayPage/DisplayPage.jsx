@@ -15,7 +15,7 @@ const DisplayPage = ({ playlistTitle, videos, error, playlistUrl }) => { // Adde
       // Structure the course data with actual playlist URL
       const courseData = {
         playlistTitle,
-        playlistUrl: playlistUrl, // Use the prop instead of window.location
+        playlistUrl: playlistUrl, 
         modules: [{
           title: "All Videos",
           videos: videos.map(video => ({

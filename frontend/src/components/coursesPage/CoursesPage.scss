@@ -1,0 +1,131 @@
+// CoursesPage.scss
+.courses-page {
+    padding: 2rem 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        color: #2d3748;
+        letter-spacing: -0.025em;
+      }
+  
+      p {
+        color: #718096;
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+    }
+  
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+      padding: 0 1rem;
+    }
+  
+    .course-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+      
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+    }
+  
+    .course-thumbnail {
+      position: relative;
+      padding-top: 56.25%; // 16:9 aspect ratio
+      background: #edf2f7;
+      
+      img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  
+    .course-info {
+      padding: 1.5rem;
+      
+      h3 {
+        margin: 0 0 0.75rem;
+        font-size: 1.25rem;
+        color: #2d3748;
+        line-height: 1.3;
+      }
+  
+      p {
+        margin: 0.5rem 0;
+        color: #718096;
+        font-size: 0.9rem;
+      }
+    }
+  
+    .view-course-button {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background-color: #4299e1;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: background-color 0.2s;
+      
+      &:hover {
+        background-color: #3182ce;
+      }
+    }
+  
+    .loading, .error {
+      text-align: center;
+      padding: 4rem;
+      font-size: 1.2rem;
+      
+      &.loading {
+        color: #4299e1;
+      }
+      
+      &.error {
+        color: #f56565;
+      }
+    }
+  }
+  
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .courses-page {
+      padding: 1rem 0.5rem;
+  
+      .header {
+        margin-bottom: 2rem;
+        
+        h1 {
+          font-size: 2rem;
+        }
+        
+        p {
+          font-size: 1rem;
+        }
+      }
+  
+      .courses-grid {
+        grid-template-columns: 1fr;
+        padding: 0;
+      }
+    }
+  }

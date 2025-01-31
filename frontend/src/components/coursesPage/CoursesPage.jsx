@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import './CoursesPage.scss';
 
 const CoursesPage = () => {
   const [courses, setCourses] = useState([]);
@@ -27,7 +28,10 @@ const CoursesPage = () => {
 
   return (
     <div className="courses-page">
-      <h1>Available Courses</h1>
+      <div className="header">
+        <h1>COURSES</h1>
+        <p>Challenging multi-step experiences with quizzes and progress-tracking</p>
+      </div>
       
       <div className="courses-grid">
         {courses.map(course => (
@@ -42,8 +46,7 @@ const CoursesPage = () => {
             </div>
             <div className="course-info">
               <h3>{course.playlistTitle}</h3>
-              <p>Modules: {course.modules.length}</p>
-              <p>Total Videos: {course.modules.reduce((total, module) => total + module.videos.length, 0)}</p>
+              <p>Videos: {course.modules.reduce((total, module) => total + module.videos.length, 0)}</p>
               <Link 
                 to={`/courses/${course._id}`} 
                 className="view-course-button"

@@ -10,8 +10,9 @@ function App() {
       <Navbar /> 
       <main>
         <Routes>
-          <Route path="/" element={<SearchPage />} />
+          <Route path="/" element={<CoursesPage />} />
           <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/search" element={<SearchPage />} />
         </Routes>
       </main>
     </Router>
